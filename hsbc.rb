@@ -81,7 +81,9 @@ module Bank
       date = Date.today.iso8601
       clean_account_name = name.gsub(' ', '_')
       src = File.join(dir, 'TransHist.ofx')
-      dst = File.join(dir, "#{clean_account_name}_#{date}.ofx")
+      dstdir = File.join(dir, date.to_s)
+      FileUtils.mkdir_p dstdir
+      dst = File.join(dstdir, "#{clean_account_name}_#{date}.ofx")
       logger.debug "Renaming #{src} to #{dst}"
       FileUtils.mv src, dst
     end
