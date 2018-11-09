@@ -33,7 +33,7 @@ module Bank
     def login
       logger.debug "Logging in"
       visit 'https://www.hsbc.co.uk/'
-      click_on 'Log On'
+      click_on 'Log on'
       fill_in('userid', with: @username)
       click_on 'Continue'
       fill_in('memorableAnswer', with: @memorable)
@@ -106,17 +106,21 @@ if $PROGRAM_NAME == __FILE__
   logger = Logger.new($stdout)
   logger.level = Logger::DEBUG
 
+  username =  ENV.fetch('BANK_USERNAME')
+  memorable = ENV.fetch('BANK_MEMORABLE')
+
   puts 'Provide one time token: '
   token = gets.chomp
   bank = Bank::HSBC.new(
-    username: ENV.fetch('BANK_USERNAME'),
-    memorable: ENV.fetch('BANK_MEMORABLE'),
+    username: username,
+    memorable: memorable,
     token: token,
     dir: statements_directory,
     logger: logger
   )
 
   bank.login
+  sleep 1.5
 
   begin
     ['HSBC ADVANCE', 'FLEX SAV PRE', 'LOY ISA ADV', 'ON BNS SAVER'].each do |account|
