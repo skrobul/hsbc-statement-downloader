@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'dotenv/load'
 require 'capybara'
 require 'date'
 require 'capybara/dsl'

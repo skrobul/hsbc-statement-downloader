@@ -14,6 +14,7 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.2)
+    dotenv (2.6.0)
     ffi (1.9.25)
     method_source (0.9.1)
     mini_mime (1.0.1)
@@ -40,6 +41,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara
+  dotenv
   pry
   selenium-webdriver
 
