@@ -34,6 +34,7 @@ module Bank
     def login
       logger.debug "Logging in"
       visit 'https://www.hsbc.co.uk/'
+      click_on 'Accept all cookies'
       click_on 'Log on'
       fill_in('userid', with: @username)
       click_on 'Continue'
