@@ -52,7 +52,12 @@ module Bank
       if page.has_content? 'View more'
         click_on 'View more'
       end
-      click_on 'Download'
+      begin
+        click_on 'Download'
+      rescue Capybara::ElementNotFound
+        logger.info 'Download element not available.'
+        return :not_downloaded
+      end
       choose 'OFX'
       sleep 2
       within('.submitButtonsPanel') do
@@ -127,7 +132,9 @@ if $PROGRAM_NAME == __FILE__
   begin
     ['HSBC ADVANCE', 'FLEX SAV PRE', 'LOY ISA ADV', 'ON BNS SAVER'].each do |account|
       logger.info "Downloading statement for: #{account}"
-      bank.download_statement(account)
+      result = bank.download_statement(account)
+      next if result == :not_downloaded
+
       bank.rename_statement(account)
       logger.info 'completed.'
     end
