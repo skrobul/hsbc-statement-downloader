@@ -34,7 +34,7 @@ module Bank
     def login
       logger.debug "Logging in"
       visit 'https://www.hsbc.co.uk/'
-      click_on 'Accept all cookies'
+      click_on 'Accept all cookies' rescue nil
       click_on 'Log on'
       fill_in('userid', with: @username)
       click_on 'Continue'
@@ -56,29 +56,22 @@ module Bank
         click_on 'Download'
       rescue Capybara::ElementNotFound
         logger.info 'Download element not available.'
+        click_on "Back to your accounts"
         return :not_downloaded
       end
-      choose 'OFX'
-      sleep 2
-      within('.submitButtonsPanel') do
-        begin
-          popup = window_opened_by do
-            find_button('Cancel')
-            find_button('Download').click
-            logger.debug "Clicked on download"
-          end
-          block_until_downloaded
-          popup.close
-        rescue Capybara::WindowError => err
-          logger.error "popup not opened: #{err}"
-        end
+      find('label[for="ofx"]').click
+      sleep 1
+      within('.modal-footer') do
+        click_on 'Continue'
+        block_until_downloaded
       end
+      click_on "Back to your accounts"
     end
 
     def block_until_downloaded
       Timeout.timeout(15) do
         loop do
-          return if File.exist?(File.join(dir, 'TransHist.ofx'))
+          return if File.exist?(File.join(dir, 'TransactionHistory.ofx'))
           sleep 0.2
         end
       end
@@ -87,7 +80,7 @@ module Bank
     def rename_statement(name)
       date = Date.today.iso8601
       clean_account_name = name.gsub(' ', '_')
-      src = File.join(dir, 'TransHist.ofx')
+      src = File.join(dir, 'TransactionHistory.ofx')
       dstdir = File.join(dir, date.to_s)
       FileUtils.mkdir_p dstdir
       dst = File.join(dstdir, "#{clean_account_name}_#{date}.ofx")
