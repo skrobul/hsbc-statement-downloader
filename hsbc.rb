@@ -49,8 +49,8 @@ module Bank
     def download_statement(account_name = nil)
       select_account(account_name) if account_name
       logger.debug "Selecting #{account_name.inspect}"
-      if page.has_content? 'View more'
-        click_on 'View more'
+      if page.has_content? 'Show next 100 transactions'
+        click_on 'Show next 100 transactions'
       end
       begin
         click_on 'Download'
