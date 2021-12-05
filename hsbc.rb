@@ -132,7 +132,8 @@ if $PROGRAM_NAME == __FILE__
   sleep 1.0
 
   begin
-    ['HSBC ADVANCE', 'FLEX SAV PRE', 'LOY ISA ADV', 'ON BNS SAVER'].each do |account|
+    accounts = ENV.fetch('ACCOUNTS').split(',')
+    accounts.each do |account|
       logger.info "Downloading statement for: #{account}"
       result = bank.download_statement(account)
       next if result == :not_downloaded
