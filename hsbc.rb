@@ -88,7 +88,7 @@ module Bank
 
     def rename_statement(name)
       date = Date.today.iso8601
-      clean_account_name = name.gsub(' ', '_')
+      clean_account_name = name.gsub(' ', '_').gsub('/', '_')
       src = File.join(dir, 'TransactionHistory.ofx')
       dstdir = File.join(dir, date.to_s)
       FileUtils.mkdir_p dstdir
