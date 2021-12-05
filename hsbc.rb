@@ -31,16 +31,25 @@ module Bank
       @popups = []
     end
 
+    def accept_cookies
+      if page.has_content? 'Accept all cookies'
+        click_on 'Accept all cookies' rescue nil
+      end
+    end
+
     def login
       logger.debug "Logging in"
       visit 'https://www.hsbc.co.uk/'
-      click_on 'Accept all cookies' rescue nil
+      accept_cookies
       click_on 'Log on'
+      accept_cookies
       fill_in('userid', with: @username)
       click_on 'Continue'
+      accept_cookies
       fill_in('memorableAnswer', with: @memorable)
       fill_in('idv_OtpCredential', with: @token)
       click_on 'Continue'
+      accept_cookies
       if page.has_content? 'View more'
         logger.debug 'Logged in.'
       end
@@ -120,7 +129,7 @@ if $PROGRAM_NAME == __FILE__
   )
 
   bank.login
-  sleep 1.5
+  sleep 1.0
 
   begin
     ['HSBC ADVANCE', 'FLEX SAV PRE', 'LOY ISA ADV', 'ON BNS SAVER'].each do |account|
