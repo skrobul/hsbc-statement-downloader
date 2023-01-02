@@ -12,6 +12,8 @@ FileUtils.mkdir_p statements_directory
 Capybara.register_driver :chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.prefs['download.default_directory'] = statements_directory
+  options.prefs['download.prompt_for_download'] = false
+  options.prefs['profile.default_content_settings.popups'] = 0
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
@@ -43,12 +45,13 @@ module Bank
       accept_cookies
       click_on 'Log on'
       accept_cookies
-      fill_in('userid', with: @username)
+      fill_in('username', with: @username)
       click_on 'Continue'
       accept_cookies
-      fill_in('memorableAnswer', with: @memorable)
-      fill_in('idv_OtpCredential', with: @token)
-      click_on 'Continue'
+      fill_in('offlineotp', with: @token)
+      click_on 'Log on'
+      # fill_in('memorableAnswer', with: @memorable)
+      # click_on 'Continue'
       accept_cookies
       if page.has_content? 'View more'
         logger.debug 'Logged in.'
